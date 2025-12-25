@@ -7,17 +7,17 @@ const jsonData = JSON.parse(rawData);
 
 // Fungsi untuk memproses data JSON menjadi format yang diinginkan
 const processData = (data) => {
-    return data.map(entry => ({
+    return data.map((entry) => ({
         "Tanggal": entry.tanggal,
-        "Nama Nasabah": entry.namaNasabah,
-        "Nama Tim Project": entry.namaTimProject.nama,
-        "Nama Tim Market": entry.namaMarket.nama,
-        "Nama Mitra / Subsidi": entry.namaMitra,
-        "Cabang Pengerjaan": entry.cabangPengerjaan.nama,
+        "Nama Nasabah": entry.namaNasabah?.trim() || "-",
+        "Nama Tim Project": entry.namaTimProject?.nama || "-",
+        "Nama Tim Market": entry.namaMarket?.nama || "-", // 🔥 FIX
+        "Nama Mitra": entry.namaMitra || "-",
+        "Cabang": entry.cabangPengerjaan?.nama || "-",
         "Reports": entry.reports.map(report => `${report.aplikasi} (Rp${report.pencairan})`).join(', '),
-        "Jumlah Pencairan": entry.jumlahPencairan,
-        "Jumlah Transfer": entry.jumlahTransfer,
-        "Keterangan": entry.keterangan,
+        "Jumlah Pencairan": entry.jumlahPencairan || 0,
+        "Jumlah Transfer": entry.jumlahTransfer || 0,
+        "Keterangan": entry.keterangan || "",
     }));
 };
 

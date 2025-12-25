@@ -9,11 +9,11 @@ const jsonData = JSON.parse(rawData);
 const processData = (data) => {
     return data.map(entry => ({
         "Tanggal": entry.tanggal,
-        "Nama Nasabah": entry.namaNasabah,
-        "Nama Tim Project": entry.namaTimProject ? entry.namaTimProject.nama : null,
-        "Nama Tim Market": entry.namaMarket.nama,
-        "Nama Mitra / Subsidi": entry.namaMitra,
-        "Cabang Pengerjaan": entry.cabangPengerjaan.nama,
+        "Nama Nasabah": entry.namaNasabah?.trim() || "-",
+        "Nama Tim Project": entry.namaTimProject?.nama || "-",
+        "Nama Tim Market": entry.namaMarket?.nama || "-", // 🔥 FIX
+        "Nama Mitra": entry.namaMitra || "-",
+        "Cabang": entry.cabangPengerjaan?.nama || "-",
         "Nama Aplikasi": entry.aplikasi,
         "Jumlah Gestun": entry.jumlahGestun,
         "Jumlah Transfer": entry.jumlahTransfer,
@@ -21,22 +21,18 @@ const processData = (data) => {
         "potonganDp": entry.potonganDp,
         "potonganLainnya": entry.potonganLainnya,
         "Keterangan": entry.keterangan,
-        "buktiTF": entry.buktiTransfer.url
     }));
 };
 
 // Konversi data menjadi format Excel
 const convertToExcel = (data) => {
-    const processedData = processData(data);
+    const safeData = Array.isArray(data) ? data : [data]; // 🔥 FIX
+    const processedData = processData(safeData);
 
-    // Buat worksheet dari data yang telah diproses
     const ws = xlsx.utils.json_to_sheet(processedData);
-
-    // Buat workbook dan tambahkan worksheet
     const wb = xlsx.utils.book_new();
     xlsx.utils.book_append_sheet(wb, ws, 'Sheet1');
 
-    // Tulis workbook ke file
     xlsx.writeFile(wb, 'DATA GESTUN SEPTEMBER 2024.xlsx');
 };
 
